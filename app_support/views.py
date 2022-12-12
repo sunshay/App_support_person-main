@@ -1,58 +1,100 @@
+from django.shortcuts import render,redirect
 from rest_framework import mixins
 from rest_framework import generics
-from .models import User, Country, State, City, Period, Product, Reparation, Departement
-from .serializers import (UserSerializer, CountrySerializer, StateSerializer, CitySerializer,
-                          PeriodSerializer, ProductSerializer, RepationSerializer, DepartementSerializer)
+from .models import User, Customer, Campany, Subject
+from .serializers import (CustomerSerializer,CompanySerializer, SubjectSerializer)
+from .forms import CustomerForm, CampanyForm, SubjectForm
+from django.contrib import messages
   
 
-# view for country  
-class CountryList(generics.ListCreateAPIView):
-    
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-  
-# view for state
-class StateList(generics.ListCreateAPIView):
-    
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
+
  
-# view City    
-class CityList(generics.ListCreateAPIView):
-    
-    queryset = City.objects.all()
-    serializer_class = CitySerializer
+# partials web fucitonlite
 
-# view departement    
-class DepartementList(generics.ListCreateAPIView):
+def create_subject(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    context["subjects"] = Subject.objects.all()
+ 
+    # add the dictionary during initialization
+    form = SubjectForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, f"Add succefuly")
+         
+    context['form']= form
+    return render(request, "create_subject.html", context)
+
+# function to save notification
+def save_customer(request):
+    if request.method == 'POST':
+        email= request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        username = request.POST.get('username')
+       
+        customer = Customer(email=email, phone_number=phone_number,username=username)
+        customer.save()
+        messages.success(request, f"Add succefuly")
+        return redirect('create_subject')
     
-    queryset = Departement.objects.all()
-    serializer_class = DepartementSerializer
-    
+# function to save notification
+def save_campany(request):
+    if request.method == 'POST':
+        name= request.POST.get('campany_name')
+       
+        campany = Campany(name=name)
+        
+        campany.save()
+        messages.success(request, f"Add succefuly")
+
+        return redirect('create_subject')
+
+
+def create_customer(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    form = CustomerForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+         
+    context['form']= form
+    return render(request, "create_customer.html", context)
+
+
+def create_campany(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    form = CampanyForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+         
+    context['form']= form
+    return render(request, "create_campany.html", context)
+
+# partials for api   
 # view for User 
-class UserList(generics.ListCreateAPIView):
+class CustomerList(generics.ListCreateAPIView):
     
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset =Customer.objects.all()
+    serializer_class = CustomerSerializer
 
-# View for Period    
-class PeriodList(generics.ListCreateAPIView):
-    
-    queryset = Period.objects.all()
-    serializer_class = PeriodSerializer
 
-# view for product
-class ProductList(generics.ListCreateAPIView):
+# view for Campany
+class CampanyList(generics.ListCreateAPIView):
     
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    queryset = Campany.objects.all()
+    serializer_class = CompanySerializer
 
-# view for support person    
-class ReparationList(generics.ListCreateAPIView):
+# view for subject   
+class SubjectList(generics.ListCreateAPIView):
     
-    queryset = Reparation.objects.all()
-    serializer_class = RepationSerializer
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
   
-class RepartionDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reparation.objects.all()
-    serializer_class = RepationSerializer

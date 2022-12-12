@@ -3,13 +3,18 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from app_support import views
   
 urlpatterns = [
-    path('country/', views.CountryList.as_view()),
-    path('state/', views.StateList.as_view()),
-    path('city/', views.CityList.as_view()),
-    path('departement/', views.DepartementList.as_view()),
-    path('user/', views.UserList.as_view()),
-    path('period/', views.PeriodList.as_view()),
-    path('product/', views.ProductList.as_view()),
-    path('', views.ReparationList.as_view()),
-    path('support_person/<int:pk>/', views.RepartionDetail.as_view()),
+    
+    # urls partials web
+    path('', views.create_subject, name="create_subject"),
+    path('save_customer/',views.save_customer,name='save_customer'),
+    path('save_campany/',views.save_campany,name='save_campany'),
+    
+    path('create_customer', views.create_customer, name="create_customer"),
+    path('create_customer', views.create_campany, name="create_campany"),
+    
+    # urls partials api
+    path('customer/', views.CustomerList.as_view()),
+    path('campany/', views.CampanyList.as_view()),
+    path('subject/', views.SubjectList.as_view()),
+    
 ]

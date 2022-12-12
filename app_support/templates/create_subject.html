@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <!-- Content here -->
+
+   <br><br><br>
+        <div class="row">
+          <div class="col-8">
+            <table class="table">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Username</th>
+                    <th scope="col">Campany</th>
+                    <th scope="col">Subject</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for subject in subjects %}
+                  <tr>
+                    <th scope="row">{{ subject.customer }}</th>
+                    <td colspan="2">{{ subject.company }}</td>
+                    <td>{{ subject.title }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          </div>
+          
+          <div class="col-4">
+            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Create Subject</a>
+            <a class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">add customer</a>
+          <a class="btn btn-primary" data-bs-target="#exampleModalToggle3" data-bs-toggle="modal">Add campany</a>
+
+          <br><br>
+          <form method="POST" enctype="multipart/form-data">
+     
+            <!-- Security token -->
+            {% csrf_token %}
+         
+            <!-- Using the formset -->
+            {{ form.as_p }}
+             
+            <input class="btn btn-primary" type="submit" value="Save">
+        </form>
+        
+          </div>
+    
+ 
+
+
+</div>
+</div>
+
+
+
+{% endblock content %}

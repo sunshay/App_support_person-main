@@ -1,43 +1,20 @@
 from rest_framework import serializers
-from .models import Country, State, City, Departement, User, Product, Period, Reparation
+from .models import User, Customer, Campany, Subject
 
 
-class CountrySerializer(serializers.ModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Country
-        fields = ['country',]
-        
-class StateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = State
-        fields = '__all__'
-        
-class CitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = City
-        fields = '__all__'
-        
-class DepartementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Departement
+        model= Customer
         fields = '__all__'
 
-class UserSerializer(serializers.ModelSerializer):
+        
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model= User
-        fields = '__all__'
-
-class PeriodSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Period
+        model = Campany
         fields = '__all__'
         
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
         
-class RepationSerializer(serializers.ModelSerializer):
+class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Reparation
+        model = Subject
         fields = '__all__'

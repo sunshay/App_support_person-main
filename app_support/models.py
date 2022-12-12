@@ -9,88 +9,46 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, username, work_email, password=None):
+    def create_user(self, username, email, password=None):
         if username is None:
             raise TypeError('Users should have a username')
-        if work_email is None:
+        if email is None:
             raise TypeError('Users should have a Email')
 
-        user = self.model(username=username, email=self.normalize_email(work_email))
+        user = self.model(username=username, email=self.normalize_email(email))
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, username, work_email, password=None):
+    def create_superuser(self, username, email, password=None):
         if password is None:
             raise TypeError('Password should not be none')
 
-        user = self.create_user(username, work_email, password)
+        user = self.create_user(username, email, password)
         user.is_superuser = True
         user.is_staff = True
         user.save()
         return user
 
 
-class Email(models.Model):
-    
-    email = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.country
-    
-class department(models.Model):
-    
-    state = models.CharField(max_length=20)
-    country = models.ForeignKey(department, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.state       
-
-class Phonenumber(models.Model):
-
-    city = models.CharField(max_length=20)
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.city
-    
-
-AUTH_PROVIDERS = {'facebook': 'facebook', 'google': 'google',
-                  'twitter': 'twitter', 'email': 'email'}
-
-
-class Departement(models.Model):
-    
-    departement = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.departement
-
 class User(AbstractBaseUser, PermissionsMixin):
     
     username = models.CharField(max_length=255, unique=True, db_index=True)
-    firstname = models.CharField(max_length=50)
-    lastname = models.CharField(max_length=50)
-    work_email = models.EmailField(max_length=255, unique=True, db_index=True)
-    personal_email = models.EmailField(max_length=255, unique=True, db_index=True, null=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    departement = models.ForeignKey(Departement, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=50)
+    email = models.EmailField(max_length=255, unique=True, db_index=True, null=True)
     
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    
-    auth_provider = models.CharField(
-        max_length=255, blank=False,
-        null=False, default=AUTH_PROVIDERS.get('work_email'))
+  
 
-    USERNAME_FIELD = 'work_email'
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
 
     def __str__(self):
-        return self.work_email
+        return self.email
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
@@ -99,29 +57,24 @@ class User(AbstractBaseUser, PermissionsMixin):
             'access': str(refresh.access_token)
         }
         
-class Period(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    shift = models.TextField()
+class Campany(models.Model):
+    name = models.CharField(max_length=15)
     
-    # def __str__(self):
-    #     return self.created_at
-     
+    def __str__(self):
+        return self.name
+       
+class Customer(User):
+    
+    def __str__(self):
+        return f"Customer {self.username}"
+ 
+class Subject(models.Model):
+    title = models.CharField(max_length=100)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    company = models.ForeignKey(Campany, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Customer {self.customer }  Company {self.company}"   
 
-class Product(models.Model):
-    title = models.CharField(max_length=15)
-    
-    def __str__(self):
-        return self.title
-    
-    
-class Reparation(models.Model):
-    issue = models.TextField()
-    support_person = models.ForeignKey(User, on_delete=models.CASCADE)
-    period = models.ForeignKey(Period, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return f"Person {self.support_person} period {self.period} and {self.product}"
     
     
