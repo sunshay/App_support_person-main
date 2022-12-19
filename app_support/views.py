@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect
 from rest_framework import mixins
 from rest_framework import generics
-from .models import User, Customer, Campany, Subject
+from .models import User, Customer, Campany, Subject, TicketSupport
 from .serializers import (CustomerSerializer,CompanySerializer, SubjectSerializer)
-from .forms import CustomerForm, CampanyForm, SubjectForm
+from .forms import CustomerForm, CampanyForm, SubjectForm, TicketForm
 from django.contrib import messages
   
 
@@ -12,21 +12,26 @@ from django.contrib import messages
 # partials web fucitonlite
 
 def create_subject(request):
-    # dictionary for initial data with
-    # field names as keys
+    
     context ={}
-    context["subjects"] = Subject.objects.all()
+    context["tickets"] = TicketSupport.objects.all()
+    context["companies"] = Campany.objects.all()
  
-    # add the dictionary during initialization
-    form = SubjectForm(request.POST or None)
+    # add the subject
+    form = TicketForm(request.POST or None)
+    form_s = SubjectForm(request.POST or None)
     if form.is_valid():
         form.save()
         messages.success(request, f"Add succefuly")
+    if form_s.is_valid():
+        form_s.save()
+        messages.success(request, f"Add succefuly")
          
     context['form']= form
+    context['form_s']= form_s
     return render(request, "create_subject.html", context)
 
-# function to save notification
+# add customer
 def save_customer(request):
     if request.method == 'POST':
         email= request.POST.get('email')
@@ -38,7 +43,7 @@ def save_customer(request):
         messages.success(request, f"Add succefuly")
         return redirect('create_subject')
     
-# function to save notification
+# function  
 def save_campany(request):
     if request.method == 'POST':
         name= request.POST.get('campany_name')
@@ -46,6 +51,36 @@ def save_campany(request):
         campany = Campany(name=name)
         
         campany.save()
+        messages.success(request, f"Add succefuly")
+
+        return redirect('create_subject')
+    
+# function sa ticket 
+def save_ticket(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        support = request.POST.get('assignee')
+        status = request.POST.get('status')
+        description = request.POST.get('description')
+        suject = request.POST.get('suject')
+        
+        
+        tickets = TicketSupport(title=title,assignee=support,status=status,description=description,suject=suject)
+        
+        tickets.save()
+        messages.success(request, f"Add succefuly")
+
+        return redirect('create_subject')
+    
+def save_subject(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        company = request.POST.get('company')
+        
+        
+        tickets = Subject(title=title,company=company)
+        
+        tickets.save()
         messages.success(request, f"Add succefuly")
 
         return redirect('create_subject')
@@ -77,6 +112,7 @@ def create_campany(request):
          
     context['form']= form
     return render(request, "create_campany.html", context)
+
 
 # partials for api   
 # view for User 
