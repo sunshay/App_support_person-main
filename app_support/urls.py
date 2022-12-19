@@ -8,6 +8,8 @@ urlpatterns = [
     path('', views.create_subject, name="create_subject"),
     path('save_customer/',views.save_customer,name='save_customer'),
     path('save_campany/',views.save_campany,name='save_campany'),
+    path('save_subject/',views.save_subject,name='save_subject'),
+    
     
     path('create_customer', views.create_customer, name="create_customer"),
     path('create_customer', views.create_campany, name="create_campany"),

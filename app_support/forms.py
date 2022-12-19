@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Campany, Subject
+from .models import Customer, Campany, Subject, TicketSupport
 
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -37,4 +37,10 @@ class SubjectForm(FormSettings):
     
     class Meta:
         model = Subject
+        fields = "__all__"
+        
+class TicketForm(FormSettings):
+    
+    class Meta:
+        model = TicketSupport
         fields = "__all__"
