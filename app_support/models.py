@@ -56,7 +56,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
-        
+
+class TicketStatus(models.TextChoices):
+    TO_DO = 'To Do'
+    IN_PROGRESS = 'In Progress'
+    IN_REVIEW = 'In Review'
+    DONE = 'Done'
+    
+   
 class Campany(models.Model):
     name = models.CharField(max_length=15)
     
@@ -70,11 +77,17 @@ class Customer(User):
  
 class Subject(models.Model):
     title = models.CharField(max_length=100)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Campany, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"Customer {self.customer }  Company {self.company}"   
+        return f"Company {self.company}"   
 
     
-    
+class TicketSupport(models.Model):
+    title = models.CharField(max_length=100)
+    assignee = models.ForeignKey(User, null=True, blank = True, on_delete=models.CASCADE)
+    status = models.CharField(max_length=25, choices=TicketStatus.choices, default=TicketStatus.TO_DO)
+    description = models.TextField()
+    created_at = models.DateTimeField('created at', auto_now_add=True)
+    updated_at = models.DateTimeField('updated at', auto_now=True)
+    suject = models.ForeignKey(Subject, on_delete=models.CASCADE)
